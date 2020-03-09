@@ -55,9 +55,9 @@ class AdjacencyMatrix():
             self.d[val2] = keyval2
 
             if self.weighted == True:
-                keyval[34] = o[2]
+                keyval[track + 1] = o[2]
                 self.d[val] = keyval
-                keyval2[34] = o[2]
+                keyval2[track +1] = o[2]
                 self.d[val2] = keyval2
 
         #print("dict1", self.f)
@@ -123,7 +123,7 @@ class AdjacencyMatrix():
         c = 0
         for k in self.f:
             c = c + 1
-        #print(c)
+        print(c)
         return c
 
     def edge_count(self) -> int:
@@ -185,10 +185,10 @@ class AdjacencyMatrix():
         # pass
 
         ver1 = self.f[v0]
-        #print(ver1)
+        print(ver1)
         connections = self.d[ver1]
         ver2 = self.f[v1]
-        #print(ver2)
+        print(ver2)
 
         if connections[ver2] == 1:
 #             print("u", True)
@@ -227,7 +227,7 @@ class AdjacencyMatrix():
         count = 0
         ver1 = self.f[v]
         connections = self.d[ver1]
-        #print("conn", connections)
+        print("conn", connections)
         for i in connections:
             count = count + 1
             #print("i", i)
@@ -235,7 +235,7 @@ class AdjacencyMatrix():
                 # print("reached")
                 for key, value in self.f.items():
                     if value == count:
-                        #print(key)
+                        print(key)
 
     def degree(self, v) -> {int}:
         """
