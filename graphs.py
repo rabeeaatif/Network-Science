@@ -529,9 +529,9 @@ class AdjacencyMatrix():
             if i == '':
                 continue
             o = i.split()
-            x[0] = int(x[0])
-            print(x[0])
-            x[1] = int(x[1])
+            o[0] = int(o[0])
+            print(o[0])
+            o[1] = int(o[1])
             # print(x)
 
             # print(o)
@@ -721,7 +721,7 @@ class AdjacencyMatrix():
         Yields:
         neighbors of v in the graph.
         """
-        count = 0
+        count = -1
         ver1 = self.f[v]
         connections = self.d[ver1]
         print("conn", connections)
@@ -732,7 +732,7 @@ class AdjacencyMatrix():
                 # print("reached")
                 for key, value in self.f.items():
                     if value == count:
-                        print(key)
+                        yield key
 
     def degree(self, v) -> {int}:
         """
