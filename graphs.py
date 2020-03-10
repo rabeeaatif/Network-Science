@@ -254,7 +254,7 @@ class Graph:
         return self.graph.weight(v0, v1)
 
 
-# --------------------------------------------------------------------------------------------------------------------- #
+# ----------------------------------------------------AdjacencyList----------------------------------------------------------------- #
 
 class AdjacencyList():
     def __init__(self, edges: str):
@@ -480,8 +480,8 @@ class AdjacencyList():
             return None
         else:
             return 1
-###############################################
 
+# ----------------------------------------------------AdjacencyMatrix----------------------------------------------------------------- #
 
 class AdjacencyMatrix():
 
@@ -489,13 +489,10 @@ class AdjacencyMatrix():
         self.f = {}
         self.d = {}
         self.weighted = False
-        #self.edges = deepcopy(edges)
         count_array = []
         track = -1
-        #edg = edges.splitlines()
 
         for x in edges.splitlines():
-            # print(x)
             if x == '':
                 continue
 
@@ -503,7 +500,7 @@ class AdjacencyMatrix():
             x[0] = int(x[0])
             print(x[0])
             x[1] = int(x[1])
-            # print(x)
+
             if len(x) == 3:
                 self.weighted = True
 
@@ -516,15 +513,11 @@ class AdjacencyMatrix():
                 track = track + 1
                 self.f[x[1]] = track
 
-        # f= {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '10': 9, '11': 10, '12': 11, '13': 12, '17': 13, '19': 14, '21': 15, '31': 16, '30': 17, '9': 18, '27': 19, '28': 20, '32': 21, '16': 22, '33': 23, '14': 24, '15': 25, '18': 26, '20': 27, '22': 28, '23': 29, '25': 30, '29': 31, '24': 32, '26': 33}
-        # track = 33
         a = [0] * (track + 2)
 
         for h in self.f:
             self.d[self.f[h]] = deepcopy(a)
 
-        #ed = deepcopy(edges)
-        #edges = open('datasets/hep.txt', "r")
         for i in edges.splitlines():
             if i == '':
                 continue
@@ -532,9 +525,7 @@ class AdjacencyMatrix():
             o[0] = int(o[0])
             print(o[0])
             o[1] = int(o[1])
-            # print(x)
 
-            # print(o)
             val = self.f[o[0]]
             keyval = self.d[val]
             j = self.f[o[1]]
@@ -545,7 +536,6 @@ class AdjacencyMatrix():
             # since the graph is undirected, we do the same for all the second column vertexes.
 
             val2 = self.f[o[1]]
-            #print("vallll2", val2)
             keyval2 = self.d[val2]
             k = self.f[o[0]]
             keyval2[k] = 1
@@ -556,12 +546,6 @@ class AdjacencyMatrix():
                 self.d[val] = keyval
                 keyval2[track + 1] = o[2]
                 self.d[val2] = keyval2
-
-        #print("dict1", self.f)
-
-        #print("FinalDict", self.d)
-
-        # return self.f
 
     def vertices(self):
         """Iterates over the vertices in the graph.
@@ -575,9 +559,7 @@ class AdjacencyMatrix():
         Yields:
         vertices in the graph.
         """
-#         print("wtff")
         for x in self.f:
-            #             print(x)
             yield x
 
     def edges(self) -> {Edge}:
@@ -603,8 +585,6 @@ class AdjacencyMatrix():
 
                     for key, value in self.f.items():
                         if value == count:
-                            #                               print(i, key)
-                            #                               print (Edge(i, key))
                             yield Edge(i, key)
 
     def vertex_count(self) -> int:
@@ -632,21 +612,12 @@ class AdjacencyMatrix():
         Returns:
         the number of edges in the graph.
         """
-        # y = 0
-        # print(edges)
-        # for e in edges:
-        #     print(e)
-        #     y = y + 1
-        # print(y)
-        # return y
         e = 0
         for value in self.d.values():
             for i in value:
                 if i == 1:
                     e = e + 1
-#         print("e", e//2)
         return e//2
-        # class AdjacencyList(Graph):
 
     def has_vertex(self, v) -> bool:
         """Returns whether v is a vertex in the graph.
@@ -660,11 +631,9 @@ class AdjacencyMatrix():
         """
 
         if v in self.f.keys():
-            #print("vert", True)
             return True
 
         else:
-            #print("no_vert", False)
             return False
 
     def has_edge(self, v0, v1) -> bool:
@@ -679,7 +648,6 @@ class AdjacencyMatrix():
         """
         assert self.has_vertex(v0) and self.has_vertex(v1), \
             f'one or more of {v0} and {v1} are not valid vertices'
-        # pass
 
         ver1 = self.f[v0]
         print(ver1)
@@ -688,11 +656,9 @@ class AdjacencyMatrix():
         print(ver2)
 
         if connections[ver2] == 1:
-            #             print("u", True)
             return True
 
         else:
-            #             print("d", False)
             return False
 
     def has_weights(self) -> bool:
@@ -727,9 +693,7 @@ class AdjacencyMatrix():
         print("conn", connections)
         for i in connections:
             count = count + 1
-            #print("i", i)
             if i == 1:
-                # print("reached")
                 for key, value in self.f.items():
                     if value == count:
                         yield key
@@ -752,11 +716,9 @@ class AdjacencyMatrix():
         for count in i:
             if count == 1:
                 cnt = cnt + 1
-#         print(cnt)
         return cnt
 
-# 3
-
+# ----------------------------------------------------SetGraph----------------------------------------------------------------- #
 
 class SetGraph():
 
@@ -765,19 +727,15 @@ class SetGraph():
         self.ed = set()
         self.graph = 0
         self.weighted = False
-        #edg = edges.splitlines()
         self.vertcount = 0
 
         for x in edges.splitlines():
-            #             print("x", x)
             if x == '':
                 continue
-            #x = x.strip().split()
             x = x.split()
             x[0] = int(x[0])
             print(x[0])
             x[1] = int(x[1])
-            # print(x)
             if len(x) == 3:
                 self.weighted = True
                 print(x[2])
@@ -791,10 +749,6 @@ class SetGraph():
             if x[1] not in self.vert:
                 self.vert.add(x[1])
                 self.vertcount = self.vertcount + 1
-
-
-#         print(self.ed)
-
 
     def vertices(self):
         """Iterates over the vertices in the graph.
@@ -810,12 +764,9 @@ class SetGraph():
         """
         for v in self.vert:
             yield v
-#         return self.graph.vertices()
-        # pass
 
     def edges(self):
-        """Iterates over the edges in the graph.
--> {Edge}
+        """Iterates over the edges in the graph.-> {Edge}
         Args:
         - self: the instance to operate on.
 
@@ -828,8 +779,6 @@ class SetGraph():
         for e in self.ed:
             yield e[0]
 
-#         return self.graph.edges()
-
     def vertex_count(self) -> int:
         """Returns the number of vertices in the graph.
 
@@ -840,7 +789,6 @@ class SetGraph():
         the number of vertices in the graph.
         """
         return self.vertcount
-#         return self.graph.vertex_count()
 
     def edge_count(self) -> int:
         """Returns the number of edges in the graph.
@@ -851,7 +799,6 @@ class SetGraph():
         Returns:
         the number of edges in the graph.
         """
-#         return self.graph.edge_count()
         return len(self.ed)
 
     def has_vertex(self, v) -> bool:
@@ -865,7 +812,6 @@ class SetGraph():
         True if v is a vertex in the graph, False otherwise.
         """
         return v in self.vert
-#         return self.graph.has_vertex(v)
 
     def has_edge(self, v0, v1) -> bool:
         """Returns whether the grpah contains an edge between v0 and v1.
@@ -877,10 +823,6 @@ class SetGraph():
         Returns:
         True if an edge exists between v0 and v1 in the graph, False otherwise.
         """
-#         assert self.has_vertex(v0) and self.has_vertex(v1), \
-#             f'one or more of {v0} and {v1} are not valid vertices'
-#         return self.graph.has_edge(v0, v1)
-
         for i in self.ed:
             if v0 in i[0] and i[0].nbr(v0) == v1:
                 return True
@@ -915,8 +857,6 @@ class SetGraph():
         for edge in self.ed:
             if v in edge[0]:
                 yield edge[0].nbr(v)
-
-#             return self.graph.neighbors(v)
 
     def degree(self, v) -> {int}:
         """
