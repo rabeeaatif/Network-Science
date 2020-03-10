@@ -1,6 +1,8 @@
 import math
 from copy import deepcopy
 import copy
+
+
 class Edge:
     """ An undirected edge. """
 
@@ -85,6 +87,7 @@ class Edge:
         the other endpoint if v is an endpoint, otherwise None.
         """
         return self.v0 if v == self.v1 else self.v1 if v == self.v0 else None
+
 
 class Graph:
     """ Represents an undirected, possibly weighted, graph. """
@@ -191,7 +194,7 @@ class Graph:
         """
         assert self.has_vertex(v0) and self.has_vertex(v1), \
             f'one or more of {v0} and {v1} are not valid vertices'
-        
+
         return self.graph.has_edge(v0, v1)
 
     def has_weights(self) -> bool:
@@ -235,7 +238,7 @@ class Graph:
         degree of v in the graph.
         """
         return self.graph.degree(v)
-    
+
     def weight(self, v0: int, v1: int):
         """Returns the weight of the edge between v0 and v1; None if no weight.
 
@@ -249,7 +252,7 @@ class Graph:
         The weight of the edge between v0 and v1; None if graph is unweighted.
         """
         return self.graph.weight(v0, v1)
-    
+
 
 # --------------------------------------------------------------------------------------------------------------------- #
 
@@ -268,41 +271,49 @@ class AdjacencyList():
 
         Returns:
         nothing."""
-        self.weighted = False # bool for weighted graphs
-        
+        self.weighted = False  # bool for weighted graphs
+
         self.graph_dict = {}
 
-        for edge in edges.splitlines(): 
+        for edge in edges.splitlines():
             if len(edge.strip().split()) == 3:
                 self.weighted = True
             break
 
         for edge in edges.splitlines():
-            #storing edges in lst after removing spaces, \n etc
+            # storing edges in lst after removing spaces, \n etc
             if edge == '':
                 continue
             new_edge = edge.strip().split()
             if self.weighted == True:
                 new_edge = [float(i) for i in new_edge]
                 if new_edge[0] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[0]] = [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
+                    self.graph_dict[new_edge[0]] = [
+                        [Edge(new_edge[0], new_edge[1]), new_edge[2]]]
                 else:
-                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
+                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]
+                                                                   ] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
                 if new_edge[1] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[1]] = [[Edge(new_edge[1], new_edge[0]), new_edge[2]]]
+                    self.graph_dict[new_edge[1]] = [
+                        [Edge(new_edge[1], new_edge[0]), new_edge[2]]]
                 else:
-                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
+                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]
+                                                                   ] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
             else:
                 new_edge = [int(i) for i in new_edge]
                 if new_edge[0] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[0]] = [Edge(new_edge[0], new_edge[1])]
+                    self.graph_dict[new_edge[0]] = [
+                        Edge(new_edge[0], new_edge[1])]
                 else:
-                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]] + [Edge(new_edge[0], new_edge[1])]
+                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]
+                                                                   ] + [Edge(new_edge[0], new_edge[1])]
                 if new_edge[1] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[1]] = [Edge(new_edge[1], new_edge[0])]
+                    self.graph_dict[new_edge[1]] = [
+                        Edge(new_edge[1], new_edge[0])]
                 else:
-                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]] + [Edge(new_edge[0], new_edge[1])]
-            
+                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]
+                                                                   ] + [Edge(new_edge[0], new_edge[1])]
+
     def vertices(self):
         """Iterates over the vertices in the graph.
 
@@ -400,7 +411,6 @@ class AdjacencyList():
                     return True
         return False
 
-
     def has_weights(self) -> bool:
         """Returns whether the graph is weighted.
 
@@ -434,7 +444,6 @@ class AdjacencyList():
                 for edge in self.graph_dict[vertex]:
                     if edge in self.graph_dict[v]:
                         yield vertex
-            
 
     def degree(self, v) -> {int}:
         """Returns the degree of the vertex v in the graph.
@@ -451,7 +460,7 @@ class AdjacencyList():
         assert self.has_vertex(v), \
             f'{v} is not a valid vertex'
         return len(self.graph_dict[v])
-        
+
     def weight(self, v0: int, v1: int):
         """Returns the weight of the edge between v0 and v1; None if no weight.
 
@@ -466,12 +475,14 @@ class AdjacencyList():
         """
         if self.weighted:
             for edge in self.graph_dict[v0]:
-                if Edge(v0, v1)  == edge[0]:
+                if Edge(v0, v1) == edge[0]:
                     return edge[1]
             return None
         else:
             return 1
 ###############################################
+
+
 class AdjacencyMatrix():
 
     def __init__(self, edges: str):
@@ -481,11 +492,17 @@ class AdjacencyMatrix():
         #self.edges = deepcopy(edges)
         count_array = []
         track = -1
-        edg = edges.splitlines()
+        #edg = edges.splitlines()
 
-        for x in edg:
+        for x in edges.splitlines():
             # print(x)
+            if x == '':
+                continue
+
             x = x.split()
+            x[0] = int(x[0])
+            print(x[0])
+            x[1] = int(x[1])
             # print(x)
             if len(x) == 3:
                 self.weighted = True
@@ -508,9 +525,15 @@ class AdjacencyMatrix():
 
         #ed = deepcopy(edges)
         #edges = open('datasets/hep.txt', "r")
-        for i in edg:
-
+        for i in edges.splitlines():
+            if i == '':
+                continue
             o = i.split()
+            x[0] = int(x[0])
+            print(x[0])
+            x[1] = int(x[1])
+            # print(x)
+
             # print(o)
             val = self.f[o[0]]
             keyval = self.d[val]
@@ -531,7 +554,7 @@ class AdjacencyMatrix():
             if self.weighted == True:
                 keyval[track + 1] = o[2]
                 self.d[val] = keyval
-                keyval2[track +1] = o[2]
+                keyval2[track + 1] = o[2]
                 self.d[val2] = keyval2
 
         #print("dict1", self.f)
@@ -554,10 +577,10 @@ class AdjacencyMatrix():
         """
 #         print("wtff")
         for x in self.f:
-#             print(x)
+            #             print(x)
             yield x
 
-    def edges(self)-> {Edge}:
+    def edges(self) -> {Edge}:
         """Iterates over the edges in the graph.
 
         Args:
@@ -580,9 +603,9 @@ class AdjacencyMatrix():
 
                     for key, value in self.f.items():
                         if value == count:
-#                               print(i, key)
-#                               print (Edge(i, key))
-                              yield Edge(i, key)
+                            #                               print(i, key)
+                            #                               print (Edge(i, key))
+                            yield Edge(i, key)
 
     def vertex_count(self) -> int:
         """Returns the number of vertices in the graph.
@@ -665,11 +688,11 @@ class AdjacencyMatrix():
         print(ver2)
 
         if connections[ver2] == 1:
-#             print("u", True)
+            #             print("u", True)
             return True
 
         else:
-#             print("d", False)
+            #             print("d", False)
             return False
 
     def has_weights(self) -> bool:
@@ -732,7 +755,9 @@ class AdjacencyMatrix():
 #         print(cnt)
         return cnt
 
-##############################################3
+# 3
+
+
 class SetGraph():
 
     def __init__(self, edges: str):
@@ -740,31 +765,36 @@ class SetGraph():
         self.ed = set()
         self.graph = 0
         self.weighted = False
-        edg = edges.splitlines()
+        #edg = edges.splitlines()
         self.vertcount = 0
-        for x in edg:
-             if x != '':
-#             print("x", x)
 
-                x = x.split()
-                # print(x)
-                if len(x) == 3:
-                    self.weighted = True
-                    self.ed.add((Edge(x[0], x[1]), x[2]))
-                else:
-                    self.ed.add((Edge(x[0], x[1]), 0))
+        for x in edges.splitlines():
+            #             print("x", x)
+            if x == '':
+                continue
+            #x = x.strip().split()
+            x = x.split()
+            x[0] = int(x[0])
+            print(x[0])
+            x[1] = int(x[1])
+            # print(x)
+            if len(x) == 3:
+                self.weighted = True
+                print(x[2])
+                self.ed.add((Edge(x[0], x[1]), float(x[2])))
+            else:
+                self.ed.add((Edge(x[0], x[1]), 0))
 
-                if x[0] not in self.vert:
-                    self.vert.add(x[0])
-                    self.vertcount = self.vertcount + 1
-                if x[1] not in self.vert:
-                    self.vert.add(x[1])
-                    self.vertcount = self.vertcount + 1
-            
-            
-            
+            if x[0] not in self.vert:
+                self.vert.add(x[0])
+                self.vertcount = self.vertcount + 1
+            if x[1] not in self.vert:
+                self.vert.add(x[1])
+                self.vertcount = self.vertcount + 1
+
+
 #         print(self.ed)
-            
+
 
     def vertices(self):
         """Iterates over the vertices in the graph.
@@ -797,7 +827,7 @@ class SetGraph():
         """
         for e in self.ed:
             yield e[0]
-            
+
 #         return self.graph.edges()
 
     def vertex_count(self) -> int:
@@ -834,7 +864,7 @@ class SetGraph():
         Returns:
         True if v is a vertex in the graph, False otherwise.
         """
-        return v in self.ver
+        return v in self.vert
 #         return self.graph.has_vertex(v)
 
     def has_edge(self, v0, v1) -> bool:
@@ -851,9 +881,9 @@ class SetGraph():
 #             f'one or more of {v0} and {v1} are not valid vertices'
 #         return self.graph.has_edge(v0, v1)
 
-        for i in self.edg:
-          if v0 in i[0] and i[0].nbr(v0) == v1:
-            return True
+        for i in self.ed:
+            if v0 in i[0] and i[0].nbr(v0) == v1:
+                return True
         return False
 
     def has_weights(self) -> bool:
@@ -883,9 +913,9 @@ class SetGraph():
         neighbors of v in the graph.
         """
         for edge in self.ed:
-          if v in edge[0]:
-            yield edge[0].nbr(v)
-            
+            if v in edge[0]:
+                yield edge[0].nbr(v)
+
 #             return self.graph.neighbors(v)
 
     def degree(self, v) -> {int}:
@@ -903,14 +933,13 @@ class SetGraph():
         """
         degree = 0
         for edge in self.ed:
-          if v in edge[0]:
-            degree = degree +  1
+            if v in edge[0]:
+                degree = degree + 1
         return degree
-        
-    def weight(self, v0: int, v1: int):
-        if self.weighted and self.has_edge(v0,v1):
-          for x in self.ed:
-            if v0 in x[0] and x[0].nbr(v0) == v1:
-              return x[1]
-        return None
 
+    def weight(self, v0: int, v1: int):
+        if self.weighted and self.has_edge(v0, v1):
+            for x in self.ed:
+                if v0 in x[0] and x[0].nbr(v0) == v1:
+                    return x[1]
+        return None
