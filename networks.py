@@ -134,7 +134,10 @@ class NetworkOperations:
             temp_weight = shortest_path(vertex)
             if temp_weight < final_weight:
                 final_weight = temp_weight
-        return final_weight
+        if final_weight == math.inf:
+            return -1
+        else:
+            return final_weight
 
     def visualize(g: Graph) -> None:
         """Visualizes g.
