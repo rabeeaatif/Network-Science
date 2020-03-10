@@ -498,7 +498,6 @@ class AdjacencyMatrix():
 
             x = x.split()
             x[0] = int(x[0])
-            print(x[0])
             x[1] = int(x[1])
 
             if len(x) == 3:
@@ -523,7 +522,6 @@ class AdjacencyMatrix():
                 continue
             o = i.split()
             o[0] = int(o[0])
-            print(o[0])
             o[1] = int(o[1])
 
             val = self.f[o[0]]
@@ -600,7 +598,6 @@ class AdjacencyMatrix():
         c = 0
         for k in self.f:
             c = c + 1
-        print(c)
         return c
 
     def edge_count(self) -> int:
@@ -650,10 +647,8 @@ class AdjacencyMatrix():
             f'one or more of {v0} and {v1} are not valid vertices'
 
         ver1 = self.f[v0]
-        print(ver1)
         connections = self.d[ver1]
         ver2 = self.f[v1]
-        print(ver2)
 
         if connections[ver2] == 1:
             return True
@@ -690,7 +685,6 @@ class AdjacencyMatrix():
         count = -1
         ver1 = self.f[v]
         connections = self.d[ver1]
-        print("conn", connections)
         for i in connections:
             count = count + 1
             if i == 1:
@@ -734,11 +728,9 @@ class SetGraph():
                 continue
             x = x.split()
             x[0] = int(x[0])
-            print(x[0])
             x[1] = int(x[1])
             if len(x) == 3:
                 self.weighted = True
-                print(x[2])
                 self.ed.add((Edge(x[0], x[1]), float(x[2])))
             else:
                 self.ed.add((Edge(x[0], x[1]), 0))
@@ -882,4 +874,4 @@ class SetGraph():
             for x in self.ed:
                 if v0 in x[0] and x[0].nbr(v0) == v1:
                     return x[1]
-        return None
+        return 1
