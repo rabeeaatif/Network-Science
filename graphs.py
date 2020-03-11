@@ -490,12 +490,16 @@ class AdjacencyMatrix():
         self.d = {}
         self.weighted = False
         count_array = []
+        # self.edge_c = 0
+        # self.vert_c = 0
         track = -1
 
         for x in edges.splitlines():
+
             if x == '':
                 continue
 
+            #self.edge_c = self.edge_c + 1
             x = x.split()
             x[0] = int(x[0])
             x[1] = int(x[1])
@@ -505,11 +509,14 @@ class AdjacencyMatrix():
 
             if x[0] not in count_array:
                 count_array.append(x[0])
+                #self.vert_c = self.vert_c + 1
                 track = track + 1
                 self.f[x[0]] = track
+
             if x[1] not in count_array:
                 count_array.append(x[1])
                 track = track + 1
+                #self.vert_c = self.vert_c + 1
                 self.f[x[1]] = track
 
         a = [0] * (track + 2)
@@ -528,22 +535,30 @@ class AdjacencyMatrix():
             keyval = self.d[val]
             j = self.f[o[1]]
 
-            keyval[j] = 1
-            self.d[val] = keyval
+            if self.weighted == False:
+
+                keyval[j] = 1
+                self.d[val] = keyval
+
+            if self.weighted == True:
+                keyval[j] = float(o[2])
+                self.d[val] = keyval
 
             # since the graph is undirected, we do the same for all the second column vertexes.
 
             val2 = self.f[o[1]]
             keyval2 = self.d[val2]
             k = self.f[o[0]]
-            keyval2[k] = 1
-            self.d[val2] = keyval2
+
+            if self.weighted == False:
+                keyval2[k] = 1
+                self.d[val2] = keyval2
 
             if self.weighted == True:
-                keyval[track + 1] = o[2]
-                self.d[val] = keyval
-                keyval2[track + 1] = o[2]
+                keyval2[k] = float(o[2])
                 self.d[val2] = keyval2
+
+           
 
     def vertices(self):
         """Iterates over the vertices in the graph.
@@ -557,7 +572,9 @@ class AdjacencyMatrix():
         Yields:
         vertices in the graph.
         """
+
         for x in self.f:
+
             yield x
 
     def edges(self) -> {Edge}:
@@ -579,7 +596,7 @@ class AdjacencyMatrix():
             lst = self.d[x]
             for l in lst:
                 count = count + 1
-                if l == 1:
+                if l:
 
                     for key, value in self.f.items():
                         if value == count:
@@ -598,7 +615,9 @@ class AdjacencyMatrix():
         c = 0
         for k in self.f:
             c = c + 1
+
         return c
+        # return self.vert_c
 
     def edge_count(self) -> int:
         """Returns the number of edges in the graph.
@@ -609,12 +628,17 @@ class AdjacencyMatrix():
         Returns:
         the number of edges in the graph.
         """
+        
         e = 0
         for value in self.d.values():
             for i in value:
-                if i == 1:
+                # if i == 1:
+                if i:
                     e = e + 1
+
         return e//2
+        # return self.edge_c
+        # class AdjacencyList(Graph):
 
     def has_vertex(self, v) -> bool:
         """Returns whether v is a vertex in the graph.
@@ -628,9 +652,11 @@ class AdjacencyMatrix():
         """
 
         if v in self.f.keys():
+            
             return True
 
         else:
+            
             return False
 
     def has_edge(self, v0, v1) -> bool:
@@ -645,15 +671,19 @@ class AdjacencyMatrix():
         """
         assert self.has_vertex(v0) and self.has_vertex(v1), \
             f'one or more of {v0} and {v1} are not valid vertices'
+        
 
         ver1 = self.f[v0]
+        
         connections = self.d[ver1]
         ver2 = self.f[v1]
-
-        if connections[ver2] == 1:
+        
+        if connections[ver2]:
+            
             return True
 
         else:
+            
             return False
 
     def has_weights(self) -> bool:
@@ -685,9 +715,13 @@ class AdjacencyMatrix():
         count = -1
         ver1 = self.f[v]
         connections = self.d[ver1]
+        #print("conn", connections)
         for i in connections:
             count = count + 1
-            if i == 1:
+            #print("i", i)
+            # if i == 1:
+            if i:
+                # print("reached")
                 for key, value in self.f.items():
                     if value == count:
                         yield key
@@ -708,9 +742,20 @@ class AdjacencyMatrix():
         cnt = 0
         i = self.d[self.f[v]]
         for count in i:
-            if count == 1:
+            # if count == 1:
+            if count:
                 cnt = cnt + 1
         return cnt
+
+    def weight(self, v0: int, v1: int):
+        if self.weighted and self.has_edge(v0, v1):
+            a = self.f[v0]
+            b = self.f[v1]
+            lst = self.d[a]
+            w = lst[b]
+
+            return w
+        return 1
 
 # ----------------------------------------------------SetGraph----------------------------------------------------------------- #
 
