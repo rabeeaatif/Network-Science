@@ -288,31 +288,23 @@ class AdjacencyList():
             if self.weighted == True:
                 new_edge = [float(i) for i in new_edge]
                 if new_edge[0] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[0]] = [
-                        [Edge(new_edge[0], new_edge[1]), new_edge[2]]]
+                    self.graph_dict[new_edge[0]] = [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
                 else:
-                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]
-                                                                   ] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
+                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
                 if new_edge[1] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[1]] = [
-                        [Edge(new_edge[1], new_edge[0]), new_edge[2]]]
+                    self.graph_dict[new_edge[1]] = [[Edge(new_edge[1], new_edge[0]), new_edge[2]]]
                 else:
-                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]
-                                                                   ] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
+                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]] + [[Edge(new_edge[0], new_edge[1]), new_edge[2]]]
             else:
                 new_edge = [int(i) for i in new_edge]
                 if new_edge[0] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[0]] = [
-                        Edge(new_edge[0], new_edge[1])]
+                    self.graph_dict[new_edge[0]] = [Edge(new_edge[0], new_edge[1])]
                 else:
-                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]
-                                                                   ] + [Edge(new_edge[0], new_edge[1])]
+                    self.graph_dict[new_edge[0]] = self.graph_dict[new_edge[0]] + [Edge(new_edge[0], new_edge[1])]
                 if new_edge[1] not in self.graph_dict.keys():
-                    self.graph_dict[new_edge[1]] = [
-                        Edge(new_edge[1], new_edge[0])]
+                    self.graph_dict[new_edge[1]] = [Edge(new_edge[1], new_edge[0])]
                 else:
-                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]
-                                                                   ] + [Edge(new_edge[0], new_edge[1])]
+                    self.graph_dict[new_edge[1]] = self.graph_dict[new_edge[1]] + [Edge(new_edge[0], new_edge[1])]
 
     def vertices(self):
         """Iterates over the vertices in the graph.
@@ -342,14 +334,13 @@ class AdjacencyList():
         vertices in the graph.
         """
         edge_count = []
-        for vertex in self.graph_dict.keys():
-            for edge in self.graph_dict[vertex]:
-                if edge not in edge_count:
-                    edge_count.append(edge)
-                    if self.weighted != True:
-                        yield edge
-                    else:
-                        yield edge[0]
+        for edge in self.graph_dict.values():
+            if edge not in edge_count:
+                edge_count.append(edge)
+                if self.weighted != True:
+                    yield edge
+                else:
+                    yield edge[0]
 
     def vertex_count(self) -> int:
         """Returns the number of vertices in the graph.
@@ -373,11 +364,10 @@ class AdjacencyList():
         """
         counted_edges = []
         edge_sum = 0
-        for vertex in self.graph_dict.keys():
-            for edge in self.graph_dict[vertex]:
-                if edge or edge[0] not in counted_edges:
-                    counted_edges.append(edge)
-                    edge_sum += 1
+        for edge in self.graph_dict.values():
+            if edge not in counted_edges:
+                counted_edges.append(edge)
+                edge_sum += 1
         return edge_sum
 
     def has_vertex(self, v) -> bool:
@@ -402,13 +392,10 @@ class AdjacencyList():
         Returns:
         True if an edge exists between v0 and v1 in the graph, False otherwise.
         """
-        assert self.has_vertex(v0) and self.has_vertex(v1), \
-            f'one or more of {v0} and {v1} are not valid vertices'
 
-        for vertex in self.graph_dict.keys():
-            for edge in self.graph_dict[vertex]:
-                if Edge(v0, v1) == edge or Edge(v0, v1) == edge[0]:
-                    return True
+        for edge in self.graph_dict.values():
+            if Edge(v0, v1) == edge or Edge(v0, v1) == edge[0]:
+                return True
         return False
 
     def has_weights(self) -> bool:
@@ -437,13 +424,12 @@ class AdjacencyList():
         Yields:
         neighbors of v in the graph.
         """
-        for vertex in self.graph_dict.keys():
-            if vertex == v:
-                continue
+        for edge in self.graph_dict[v]:
+            if self.weighted != True:
+                yield edge.nbr(v)
             else:
-                for edge in self.graph_dict[vertex]:
-                    if edge in self.graph_dict[v]:
-                        yield vertex
+                yield edge[0].nbr(v)
+
 
     def degree(self, v) -> {int}:
         """Returns the degree of the vertex v in the graph.
@@ -473,16 +459,19 @@ class AdjacencyList():
         Returns:
         The weight of the edge between v0 and v1; None if graph is unweighted.
         """
+        given = Edge(v0, v1)
         if self.weighted:
-            for edge in self.graph_dict[v0]:
-                if Edge(v0, v1) == edge[0]:
+            if len(self.graph_dict[v0]) < len(self.graph_dict[v1]):
+                vertex = v0
+            else:
+                vertex = v1
+            for edge in self.graph_dict[vertex]:
+                if given == edge[0]:
                     return edge[1]
-            return None
         else:
             return 1
 
 # ----------------------------------------------------AdjacencyMatrix----------------------------------------------------------------- #
-
 class AdjacencyMatrix():
 
     def __init__(self, edges: str):
@@ -490,8 +479,6 @@ class AdjacencyMatrix():
         self.d = {}
         self.weighted = False
         count_array = []
-        # self.edge_c = 0
-        # self.vert_c = 0
         track = -1
 
         for x in edges.splitlines():
@@ -499,7 +486,6 @@ class AdjacencyMatrix():
             if x == '':
                 continue
 
-            #self.edge_c = self.edge_c + 1
             x = x.split()
             x[0] = int(x[0])
             x[1] = int(x[1])
@@ -509,14 +495,12 @@ class AdjacencyMatrix():
 
             if x[0] not in count_array:
                 count_array.append(x[0])
-                #self.vert_c = self.vert_c + 1
                 track = track + 1
                 self.f[x[0]] = track
 
             if x[1] not in count_array:
                 count_array.append(x[1])
                 track = track + 1
-                #self.vert_c = self.vert_c + 1
                 self.f[x[1]] = track
 
         a = [0] * (track + 2)
@@ -617,7 +601,6 @@ class AdjacencyMatrix():
             c = c + 1
 
         return c
-        # return self.vert_c
 
     def edge_count(self) -> int:
         """Returns the number of edges in the graph.
@@ -632,13 +615,9 @@ class AdjacencyMatrix():
         e = 0
         for value in self.d.values():
             for i in value:
-                # if i == 1:
                 if i:
                     e = e + 1
-
         return e//2
-        # return self.edge_c
-        # class AdjacencyList(Graph):
 
     def has_vertex(self, v) -> bool:
         """Returns whether v is a vertex in the graph.
@@ -715,13 +694,9 @@ class AdjacencyMatrix():
         count = -1
         ver1 = self.f[v]
         connections = self.d[ver1]
-        #print("conn", connections)
         for i in connections:
             count = count + 1
-            #print("i", i)
-            # if i == 1:
             if i:
-                # print("reached")
                 for key, value in self.f.items():
                     if value == count:
                         yield key
@@ -742,7 +717,6 @@ class AdjacencyMatrix():
         cnt = 0
         i = self.d[self.f[v]]
         for count in i:
-            # if count == 1:
             if count:
                 cnt = cnt + 1
         return cnt
