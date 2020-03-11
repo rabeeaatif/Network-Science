@@ -1,6 +1,5 @@
 from graphs import *
 import graphviz
-import math
 
 
 class NetworkOperations:
@@ -101,33 +100,39 @@ class NetworkOperations:
         """
         # finding the popular vertex\vertices
         popular_vertices = []
-        for vertex in g.vertices():
+        for vertex in list(g.vertices()):
             if len(popular_vertices) == 0:
                 popular_vertices.append(vertex)
+                pop_degree = g.degree(vertex)
             else:
-                if g.degree(vertex) > g.degree(popular_vertices[0]):
+                if g.degree(vertex) > pop_degree:
                     popular_vertices = [vertex]
-                elif g.degree(vertex) == g.degree(popular_vertices[0]):
+                    pop_degree = g.degree(vertex) 
+                elif g.degree(vertex) ==  pop_degree:
                     popular_vertices.append(vertex)
         # function for the shortest distance of single popular vertex
         def shortest_path(popular_vertex):
             dist={}
             unvisited=[]
-            for node in g.vertices():
-                dist[node]=("",math.inf)
+            for node in list(g.vertices()):
+                dist[node] = math.inf
                 unvisited.append(node)
-            dist[vtx]= (vtx, 0)
+            dist[vtx]= 0
             while unvisited:
+                if dist[popular_vertex] != math.inf:
+                    return (dist[popular_vertex])
                 # searching for next vertex with min weight
                 current = unvisited[0]
                 for i in unvisited:
-                    if dist[i][1] < dist[current][1]:
+                    if dist[i] < dist[current]:
                         current = i
-                (unvisited.pop(unvisited.index(current)))
-                for neighbor in g.neighbors(current):
-                    if dist[current][1] + g.weight(current, neighbor) < dist[neighbor][1]:
-                        dist[neighbor] = (current,dist[current][1] +  g.weight(current, neighbor))
-            return (dist[popular_vertex][1])
+                unvisited.remove(current)
+                neighbors = list(g.neighbors(current)) # getting all the neighbors
+                for neighbor in neighbors:
+                    weight = g.weight(current, neighbor)
+                    if dist[current] + weight < dist[neighbor]:
+                        dist[neighbor] = dist[current] +  weight
+            return (dist[popular_vertex])
         # finding the shortest distance of of all popular vertices
         final_weight = math.inf
         for vertex in popular_vertices:
@@ -137,7 +142,7 @@ class NetworkOperations:
         if final_weight == math.inf:
             return -1
         else:
-            return final_weight
+            return (int(final_weight))
 
     def visualize(g: Graph) -> None:
         """Visualizes g.
